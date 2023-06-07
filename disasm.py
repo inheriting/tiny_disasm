@@ -81,8 +81,3 @@ def write_instructions(output, path, chunk_size, instructions, cs, batch, output
                                 for instr in instructions
                          ]
             )
-
-
-
-
-

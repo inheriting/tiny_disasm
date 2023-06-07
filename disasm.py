@@ -53,31 +53,36 @@ def __disasm_file_(__path: str, __output: str, __architecture_mode_: __architect
         write_instructions(__output, __path, __chunk_size, __instructions, cs, __batch, output_format, _symbols)
 
 def write_instructions(output, path, chunk_size, instructions, cs, batch, output_format, _symbols):
-    with open(output, 'w') as output_file:
-        if output_format == 'json':
-            dump(instructions, output_file, indent=6)
-        else:
-            for __currChunk in __read_file_chunk(path, chunk_size):
-                for instruc in cs.disasm(__currChunk, 0x1000):
-                    instructions.append(
-                        {
-                            'mnemonic': instruc.mnemonic,
-                            'op_str': instruc.op_str,
-                            'address': instruc.address,
-                            'symbol': __symbol_resolution_(_symbols, instruc.address) if _symbols else ''
-                        }
-                    )
-                    if len(instructions) >= batch:
-                        output_file.writelines(
-                            [
+        with open(output, 'w') as output_file:
+                if output_format == 'json':
+                        dump(instructions, output_file, indent=6)
+                else:
+                        for __currChunk in __read_file_chunk(path, chunk_size):
+                                for instruc in cs.disasm(__currChunk, 0x1000):
+                                        instructions.append(
+                                        {
+                                                'mnemonic': instruc.mnemonic,
+                                                'op_str': instruc.op_str,
+                                                'address': instruc.address,
+                                                'symbol': __symbol_resolution_(_symbols, instruc.address) if _symbols else ''
+                                        }
+                                        )
+                        if len(instructions) >= batch:
+                                        output_file.writelines(
+                                                        [
                                 f"[MNEMONIC] {instr['mnemonic']:8}\t[OP] {instr['op_str']:20}\t\t@ ->\t\t[MEM_ADDR] 0x{instr['address']:08x}\n"
                                 for instr in instructions
                             ]
                         )
-                        instructions.clear()
-            output_file.writelines(
-                [
-                    f"[MNEMONIC] {instr['mnemonic']:8}\t[OP] {instr['op_str']:20}\t\t@ ->\t\t[MEM_ADDR] 0x{instr['address']:08x}\n"
-                    for instr in instructions
-                ]
+                                        instructions.clear()
+                output_file.writelines(
+                        [
+                                f"[MNEMONIC] {instr['mnemonic']:8}\t[OP] {instr['op_str']:20}\t\t@ ->\t\t[MEM_ADDR] 0x{instr['address']:08x}\n"
+                                for instr in instructions
+                         ]
             )
+
+
+
+
+

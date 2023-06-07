@@ -18,12 +18,19 @@ def __arg_parser() -> None:
                 default=__architectures.X86_64,
                 help="select mode",
     )
+        parser.add_argument(
+               "-of",
+               "--output-format",
+               choices=["txt", "json"],
+               default="txt",
+               help="output format",
+    )
 
         return parser.parse_args()
 
 def main() -> None:
         args = __arg_parser()
-        __disasm_file_(args.file_path, args.output_path, args.mode)
+        __disasm_file_(args.file_path, args.output_path, args.mode, args.output_format)
 
 if __name__ == "__main__":
             main()
